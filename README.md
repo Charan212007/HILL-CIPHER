@@ -1,83 +1,79 @@
-# HILL CIPHER
-## EX. NO: 3 HILL CIPHER
-## AIM:
-IMPLEMENTATION OF HILL CIPHER
+# VIGENERE-CIPHER
+## EX. NO: 4
  
-## To write a C program to implement the hill cipher substitution techniques.
+
+## IMPLEMETATION OF VIGENERE CIPHER
+ 
+
+## AIM:
+
+To implement the Vigenere Cipher substitution technique using C program.
 
 ## DESCRIPTION:
 
-Each letter is represented by a number modulo 26. Often the simple scheme A = 0, B
-= 1... Z = 25, is used, but this is not an essential feature of the cipher. To encrypt a message, each block of n letters is  multiplied by an invertible n × n matrix, against modulus 26. To
-decrypt the message, each block is multiplied by the inverse of the m trix used for
+To encrypt, a table of alphabets can be used, termed a tabula recta, Vigenère square,or Vigenère table. It consists of the alphabet written out 26 times in differnt rows, each
  
-encryption. The matrix used
- 
-for encryption is the cipher key, and it sho
- 
-ld be chosen
- 
-randomly from the set of invertible n × n matrices (modulo 26).
+alphabet shifted cyclically to the left compared to the previous alphabet, corresponding to the 26 possible Caesar ciphers. At different points in the encryption process, the cipher uses adifferent alphabet from one of the rows. The alphabet used at each point repeating keyword.depends on a Each row starts with a key letter. The remainder of the row holds the letters A to Z. Although there are 26 key rows shown, you will only use as many keys as there are unique letters in the key string, here just 5 keys, {L, E, M, O, N}. For successive letters of the message, we are going to take successive letters of the key string, and encipher each message letter using its corresponding key row. Choose the next letter of the key, go along that row to find the column heading that	atches the message character; the letter at the intersection of
+[key-row, msg-col] is the enciphered letter.
 
 
 ## ALGORITHM:
 
-STEP-1: Read the plain text and key from the user. STEP-2: Split the plain text into groups of length three. STEP-3: Arrange the keyword in a 3*3 matrix.
-STEP-4: Multiply the two matrices to obtain the cipher text of length three.
-STEP-5: Combine all these groups to get the complete cipher text.
+STEP-1: Arrange the alphabets in row and column of a 26*26 matrix.
+STEP-2: Circulate the alphabets in each row to position left such that the first letter is attached to last.
+STEP-3: Repeat this process for all 26 rows and construct the final key matrix.
+STEP-4: The keyword and the plain text is read from the user.
+STEP-5: The characters in the keyword are repeated sequentially so as to match with that of the plain text.
+STEP-6: Pick the first letter of the plain text and that of the keyword as the row indices and column indices respectively.
+STEP-7: The junction character where these two meet forms the cipher character.
+STEP-8: Repeat the above steps to generate the entire cipher text.
 
-## PROGRAM 
+
+## PROGRAM
+
 ```
-import numpy as np
+#include <stdio.h>
+#include <string.h>
+#include <ctype.h>
 
-def text_to_numbers(text):
-    return [ord(char) - ord('A') for char in text]
+int main() {
+    char text[100], key[100], cipher[100], decrypted[100];
+    int i, j, len, keylen;
 
-def numbers_to_text(numbers):
-    return ''.join(chr(num + ord('A')) for num in numbers)
+    printf("Enter plaintext: ");
+    scanf("%s", text);
 
-def hill_cipher_encrypt(plaintext, key):
-    n = len(key)
-    plaintext = plaintext.upper().replace(" ", "")
-    while len(plaintext) % n != 0:
-        plaintext += 'X'  # Padding with 'X'
-    
-    text_numbers = text_to_numbers(plaintext)
-    key_matrix = np.array(key)
-    
-    encrypted_numbers = []
-    for i in range(0, len(text_numbers), n):
-        block = np.array(text_numbers[i:i+n]).reshape(n, 1)
-        encrypted_block = np.dot(key_matrix, block) % 26
-        encrypted_numbers.extend(encrypted_block.flatten())
-    
-    return numbers_to_text(encrypted_numbers)
+    printf("Enter keyword: ");
+    scanf("%s", key);
 
-def hill_cipher_decrypt(ciphertext, key):
-    n = len(key)
-    key_matrix = np.array(key)
-    key_inverse = np.linalg.inv(key_matrix) * np.linalg.det(key_matrix)
-    key_inverse = np.round(key_inverse).astype(int) % 26  # Modular inverse approximation
-    
-    text_numbers = text_to_numbers(ciphertext)
-    decrypted_numbers = []
-    for i in range(0, len(text_numbers), n):
-        block = np.array(text_numbers[i:i+n]).reshape(n, 1)
-        decrypted_block = np.dot(key_inverse, block) % 26
-        decrypted_numbers.extend(decrypted_block.flatten())
-    
-    return numbers_to_text(decrypted_numbers)
+    len = strlen(text);
+    keylen = strlen(key);
 
-if __name__ == "__main__":
-    plaintext = input("Enter plaintext: ")
-    key = [[6, 24, 1], [13, 16, 10], [20, 17, 15]]  # Example key matrix
-    ciphertext = hill_cipher_encrypt(plaintext, key)
-    print("Encrypted Text:", ciphertext)
-    decrypted_text = hill_cipher_decrypt(ciphertext, key)
-    print("Decrypted Text:", decrypted_text)
+    // Encryption
+    for(i=0; i<len; i++) {
+        char t = toupper(text[i]);
+        char k = toupper(key[i % keylen]);
+        cipher[i] = ((t - 'A') + (k - 'A')) % 26 + 'A';
+    }
+    cipher[len] = '\0';
+    printf("Encrypted Text: %s\n", cipher);
+
+    // Decryption
+    for(i=0; i<len; i++) {
+        char c = cipher[i];
+        char k = toupper(key[i % keylen]);
+        decrypted[i] = ((c - k + 26) % 26) + 'A';
+    }
+    decrypted[len] = '\0';
+    printf("Decrypted Text: %s\n", decrypted);
+
+    return 0;
+}
 ```
 ## OUTPUT
-![image](https://github.com/user-attachments/assets/31b3f60e-b132-4c77-9ac2-6d28312a911e)
+<img width="549" height="350" alt="Screenshot 2025-10-31 171742" src="https://github.com/user-attachments/assets/05a048d0-3de4-43ec-b870-bbd1b08f05b5" />
+
 
 ## RESULT
-Thus, a python program is implement for hill cipher substitution techniques.
+
+Vigenere Cipher substitution technique has been implemented using C program.
